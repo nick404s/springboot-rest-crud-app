@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class SpringbootRestCrudAppApplication {
 
 	public static void main(String[] args) {
+		
 		SpringApplication.run(SpringbootRestCrudAppApplication.class, args);
 	}
-
 }
