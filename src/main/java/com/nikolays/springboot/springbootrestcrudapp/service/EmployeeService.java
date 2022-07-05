@@ -1,16 +1,16 @@
 package com.nikolays.springboot.springbootrestcrudapp.service;
 
-import java.util.List;
-
 import com.nikolays.springboot.springbootrestcrudapp.entity.Employee;
 
 public interface EmployeeService {
 	
-	public List<Employee> findAll();
+	public Iterable<Employee> getEmployees();
 	
-	public Employee findById(int anId);
+	public Employee findById(long anId);
 	
-	public void update(Employee anEmployee);
+	public void save(Employee anEmployee);
 	
-	public void deleteById(int anId);
+	public boolean employeeIsPresent(long anId);
+	
+	public void deleteEmployee(long anId);
 }

@@ -1,53 +1,69 @@
 package com.nikolays.springboot.springbootrestcrudapp.service;
 
-import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import com.nikolays.springboot.springbootrestcrudapp.dao.EmployeeDAO;
+import com.nikolays.springboot.springbootrestcrudapp.dao.EmployeeRepository;
 import com.nikolays.springboot.springbootrestcrudapp.entity.Employee;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
-	
-	// an EmployeeDAO object to inject
-	private EmployeeDAO employeeDAO;
+
+	private EmployeeRepository employeeRepository;
 	
 	@Autowired
-	public EmployeeServiceImpl(EmployeeDAO anEmployeeDAO) {
+	public EmployeeServiceImpl(EmployeeRepository anEmployeeRepository) {
+		employeeRepository = anEmployeeRepository;
+	}
+	
+	@Override
+	public Iterable<Employee> getEmployees() {
 		
-		employeeDAO = anEmployeeDAO;
+		return employeeRepository.findAllByOrderByLastNameAsc();
 	}
 
 	@Override
-	@Transactional
-	public List<Employee> findAll() {
-		// delegate to the DAO
-		return employeeDAO.findAll();
+	public Employee findById(long anId) {
+		Optional<Employee> result = employeeRepository.findById(anId);
+		
+		Employee anEmployee = null;
+		
+		if (result.isPresent()) {
+			anEmployee = result.get();
+		}
+		else {
+			throw new RuntimeException("Did not find employee ID: " + anId);
+		}
+		
+		return anEmployee;
 	}
 
 	@Override
-	@Transactional
-	public Employee findById(int anId) {
-		// delegate to the DAO
-		return employeeDAO.findById(anId);
+	public void save(Employee anEmployee) {
+
+		employeeRepository.save(anEmployee);
 	}
 
 	@Override
-	@Transactional
-	public void update(Employee anEmployee) {
-		// delegate to the DAO
-		employeeDAO.update(anEmployee);
-
+	public boolean employeeIsPresent(long anId) {
+		
+		Optional<Employee> employee = employeeRepository.findById(anId);
+		
+		if (employee.isPresent()) {
+			return true;
+		}
+		return false;
 	}
 
 	@Override
-	@Transactional
-	public void deleteById(int anId) {
-		// delegate to the DAO
-		employeeDAO.deleteById(anId);
+	public void deleteEmployee(long anId) {
+
+		if(employeeIsPresent(anId)) {
+			employeeRepository.deleteById(anId);
+		}
 	}
+
 
 }
